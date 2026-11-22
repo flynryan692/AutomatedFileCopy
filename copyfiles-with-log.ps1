@@ -48,6 +48,12 @@ function BackupExcluded {
             }
         }
     }
+	
+	# Exclude GUID-style metadata files in the root directory - particular issue was with OneDrive
+	if ($File.DirectoryName.TrimEnd('\') -eq $Root.TrimEnd('\') -and
+		$File.Name -match '^\.[0-9A-Fa-f]{8}-([0-9A-Fa-f]{4}-){3}[0-9A-Fa-f]{12}$') {
+		return $true
+	}
 
     return $false
 }
@@ -84,12 +90,12 @@ try {
             $currentLog = Get-Item -LiteralPath $LogFile -ErrorAction Stop
             if ($currentLog.Length -gt 0) {
                 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss-fff'
-                $archive = Join-Path $logDirectory ("CopyProtonLog-{0}.txt" -f $stamp)
+                $archive = Join-Path $logDirectory ("CopyLog-{0}.txt" -f $stamp)
                 Copy-Item -LiteralPath $LogFile -Destination $archive -ErrorAction Stop
                 Clear-Content -LiteralPath $LogFile -ErrorAction Stop
             }
         }
-        Get-ChildItem -LiteralPath $logDirectory -Filter 'CopyProtonLog-*.txt' -File -ErrorAction Stop |
+        Get-ChildItem -LiteralPath $logDirectory -Filter 'CopyLog-*.txt' -File -ErrorAction Stop |
             Sort-Object LastWriteTimeUtc -Descending |
             Select-Object -Skip 7 |
             Remove-Item -Force -ErrorAction Stop
@@ -108,7 +114,7 @@ try {
     $Destination = $Destination.TrimEnd('\')
 
     if ($Destination -match 'YOUR-TAILSCALE-IP') {
-        throw 'Set $Destination to your actual UNC path: \\100.x.x.x\Ryan\Proton Drive'
+        throw 'Set $Destination to your actual NAS UNC path.'
     }
     if (-not (Test-Path -LiteralPath $Source -PathType Container -ErrorAction Stop)) {
         throw "Source folder inaccessible: $Source"
