@@ -113,7 +113,7 @@ try {
     $Source = $Source.TrimEnd('\')
     $Destination = $Destination.TrimEnd('\')
 
-    if ($Destination -match 'C:\Path\To\Destination') {
+    if ($Destination -match 'C:\\Path\\To\\Destination') {
         throw 'Set $Destination to your actual NAS path.'
     }
     if (-not (Test-Path -LiteralPath $Source -PathType Container -ErrorAction Stop)) {
