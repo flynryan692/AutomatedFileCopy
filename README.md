@@ -13,7 +13,7 @@ Contents:
 	- The vbs script that will execute the powershell script silently through task scheduler
 
 
-To setup the scrip to run:
+To setup the script to run:
 - Edit the source, destination, and log path within copyfiles-with-log.ps1 (you can use Notepad++ or VS Code)
 - Edit the path to the copyfiles-with-log.ps1 file within RunCopyScript.vbs (you can use Notepad++ or VS Code)
 - Create a new task in Task Scheduler with triggers as needed (I use a scheduled time - YMMV with other triggers)
@@ -29,4 +29,6 @@ To skip the use of the vbs file, do the following (it flickers a console for a m
 	- Start a program: powershell.exe
 	- Arguments: -ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Path\To\RunCopyScript.vbs"
 
-Once it is set up, a log file will be generated in the path you set containing what action was taken for each file.
+Once it is set up, a log file will be generated in the path you set containing what action was taken for each file. The log file is renamed during each run and 7 logs are kept with the oldest being removed.
+
+Note: If you want to run this with multiple services place these files in their own folders. For example, one folder for OneDrive and one for Proton both with their own copies of copyfiles-with-log.ps1, RunCopyScript.vbs
