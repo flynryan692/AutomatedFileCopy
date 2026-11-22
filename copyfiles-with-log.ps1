@@ -140,12 +140,12 @@ try {
                 New-Item -ItemType Directory -Path $destDir -Force -ErrorAction Stop | Out-Null
             }
 
-            $existing = Get-Item -LiteralPath $destFile -ErrorAction SilentlyContinue
+            $existing = Get-Item -LiteralPath $destFile -Force -ErrorAction SilentlyContinue
             # Preserve the original script's policy: only copy when missing or newer.
             if ($null -eq $existing -or $file.LastWriteTimeUtc -gt $existing.LastWriteTimeUtc) {
                 Copy-Item -LiteralPath $file.FullName -Destination $destFile -Force -ErrorAction Stop
                 # Verify a destination file exists; Copy-Item returning alone is not sufficient.
-                $verified = Get-Item -LiteralPath $destFile -ErrorAction Stop
+                $verified = Get-Item -LiteralPath $destFile -Force -ErrorAction Stop
                 if ($verified.PSIsContainer -or $verified.Length -ne $file.Length) {
                     throw "Destination verification failed (size mismatch): $relativePath"
                 }
